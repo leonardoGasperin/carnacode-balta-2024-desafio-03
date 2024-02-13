@@ -18,8 +18,8 @@ jobs:
       with:
         dotnet-version: '8.0.101'
 
-    - name: List files in the repository
-      run: ls -R
+    - name: Change to project directory
+      run: cd ./Imc
 
     - name: Restore dependencies
       run: dotnet restore
