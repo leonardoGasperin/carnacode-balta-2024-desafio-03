@@ -37,10 +37,6 @@ window.checkingCadastroForms = function () {
         alert("Confirmação da senha não é igual.");
         return false;
     }
-    else if (senha.lenght < 8) {
-        alert("Senha tem que haver no minimo 16 caracteres.");
-        return false;
-    }
     else {
         return true;
     }
@@ -60,6 +56,21 @@ window.finalizarCadastro = function () {
 
 window.falhaCadastro = function () {
     alert("Este Email já tem um cadastro no app.");
+}
+
+window.recuperarConta = function (data) {
+    if (!data || data.length === 0) {
+        alert("Nenhuma conta encontrada com este E-mail.");
+        return;
+    }
+
+    const regex = /Senha:\s*([^|]*)/;
+    const match = data.match(regex);
+
+    if (match && match[1]) {
+        const passwordValue = match[1].trim();
+        alert("Valor da senha: " + passwordValue);
+    }
 }
 
 window.chekingCalculoValores = function (altura, peso, sexo) {

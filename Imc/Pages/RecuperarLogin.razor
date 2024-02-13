@@ -1,5 +1,6 @@
 ﻿@page "/recuperarLogin"
 @inject IJSRuntime JSRuntime
+@using System.Text.Json
 <PageTitle>RecuperarLogin</PageTitle>
 
 <section class="principalContainer principalContainerBigScreen principalContainerSmallScreen">
@@ -9,7 +10,7 @@
     </span>
     <br>
     <div class="inputSmallScreenContainer">
-        <input id="email" class="input inputLogin inputTinyScreen" type="email" placeholder="E-mail" />
+        <input id="email" class="input inputLogin inputTinyScreen" type="email" placeholder="E-mail" @bind="Email"/>
     </div>
     <div>
         <input id="notRobot" type="checkbox" />
@@ -22,8 +23,20 @@
 </section>
 
 @code {
+    private string Email { get; set; } = string.Empty;
+
     private async Task Checking()
     {
-        await JSRuntime.InvokeVoidAsync("checkingRecuperarLoginForms");
+        
+        if (await JSRuntime.InvokeAsync<bool>("checkingRecuperarLoginForms"))
+        {
+            var listaJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "cadastroDados");
+            if (listaJson != null)
+            {
+                var listaDeserializada = JsonSerializer.Deserialize<List<string>>(listaJson) ?? [];
+                var senha = listaDeserializada.Find(e => e.Contains("Email:" + Email)) ?? string.Empty;
+                await JSRuntime.InvokeVoidAsync("recuperarConta", senha);
+            }
+        }
     }
 }
