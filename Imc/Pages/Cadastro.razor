@@ -1,5 +1,6 @@
 ﻿@page "/cadastro"
 @inject IJSRuntime JSRuntime
+@using System.Text.Json
 <PageTitle>Cadastro</PageTitle>
 
 <section class="principalContainer principalContainerBigScreen principalContainerSmallScreen">
@@ -18,7 +19,7 @@
         <input id="senha" class="input inputLogin inputTinyScreen" type="password" placeholder="Crie uma senha" />
     </div>
     <div class="inputSmallScreenContainer">
-        <input id="senha2" class="input inputLogin inputTinyScreen" type="password" placeholder="Confirme sua senha" />
+        <input id="confirmaSenha" class="input inputLogin inputTinyScreen" type="password" placeholder="Confirme sua senha" />
     </div>
     <div>
         <input id="notRobot" type="checkbox" />
@@ -32,6 +33,39 @@
 @code {
     private async Task Checking()
     {
-        await JSRuntime.InvokeVoidAsync("checkingCadastroForms");
+        if (await JSRuntime.InvokeAsync<bool>("checkingCadastroForms"))
+        {
+            var cadastroData = await JSRuntime.InvokeAsync<string>("cadastroDados");
+            var lista = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "cadastroDados");
+            var listaDeserializada = JsonSerializer.Deserialize<List<string>>(lista) ?? [];
+
+            if (listaDeserializada == null)
+            {
+                listaDeserializada = new List<string>();
+                SalvaCadastro(listaDeserializada, cadastroData);
+            }
+            else if (CanSalvarCadastro(listaDeserializada, cadastroData))
+            {
+                SalvaCadastro(listaDeserializada, cadastroData);
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("falhaCadastro");
+            }
+
+        }
+    }
+
+    private async void SalvaCadastro(List<string> contaLista, string cadastroData)
+    {
+        contaLista.Add(cadastroData);
+        string jsonLista = JsonSerializer.Serialize(contaLista);
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "cadastroDados", jsonLista);
+        await JSRuntime.InvokeVoidAsync("finalizarCadastro");
+    }
+
+    private bool CanSalvarCadastro(List<string> contaLista, string cadastroData)
+    {
+        return  contaLista.Count > 0 && !contaLista.Contains(cadastroData)|| contaLista.Count == 0;
     }
 }
