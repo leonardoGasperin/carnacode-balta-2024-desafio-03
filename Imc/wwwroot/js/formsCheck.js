@@ -17,10 +17,10 @@ window.checkingRecuperarLoginForms = function () {
 
     if (email.trim() === "" || !notRobot) {
         alert("Por favor, preencha todos os campos.");
+        return false;
     }
-    else {
-        window.location.href = '/'
-    }
+
+    return true;
 }
 
 window.checkingCadastroForms = function () {
@@ -47,8 +47,8 @@ window.checkingCadastroForms = function () {
 }
 
 window.cadastroDados = function () {
-    let data = "Email=" + document.getElementById("email").value + "/";
-    data += "Senha=" + document.getElementById("senha").value + "/";
+    let data = "Email:" + document.getElementById("email").value + "|";
+    data += "Senha:" + document.getElementById("senha").value;
 
     return data;
 }

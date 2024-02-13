@@ -36,23 +36,25 @@
         if (await JSRuntime.InvokeAsync<bool>("checkingCadastroForms"))
         {
             var cadastroData = await JSRuntime.InvokeAsync<string>("cadastroDados");
-            var lista = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "cadastroDados");
-            var listaDeserializada = JsonSerializer.Deserialize<List<string>>(lista) ?? [];
+            var listaJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "cadastroDados");
 
-            if (listaDeserializada == null)
+            if (listaJson == null)
             {
-                listaDeserializada = new List<string>();
-                SalvaCadastro(listaDeserializada, cadastroData);
+                var lista = new List<string>();
+                SalvaCadastro(lista, cadastroData);
             }
-            else if (CanSalvarCadastro(listaDeserializada, cadastroData))
+            else if (listaJson != null)
             {
-                SalvaCadastro(listaDeserializada, cadastroData);
+                var listaDeserializada = JsonSerializer.Deserialize<List<string>>(listaJson) ?? [];
+                if (CanSalvarCadastro(listaDeserializada, cadastroData))
+                {
+                    SalvaCadastro(listaDeserializada, cadastroData);
+                }
+                else
+                {
+                    await JSRuntime.InvokeVoidAsync("falhaCadastro");
+                }
             }
-            else
-            {
-                await JSRuntime.InvokeVoidAsync("falhaCadastro");
-            }
-
         }
     }
 
