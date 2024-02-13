@@ -18,11 +18,9 @@ jobs:
       with:
         dotnet-version: '8.0.101'
         
-    - name: Change to project directory
-      run: cd Imc
-
     - name: Restore dependencies
-      run: ls
+      run: |
+        cd Imc && ls
 
     - name: Build project
       run: dotnet publish --configuration Release --output ./dist /p:PublishSingleFile=true /p:PublishTrimmed=true
