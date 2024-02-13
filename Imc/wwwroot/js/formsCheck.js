@@ -6,9 +6,6 @@ window.checkingLoginForms = function () {
     if (email.trim() === "" || senha.trim() === "" || !notRobot) {
         alert("Por favor, preencha todos os campos.");
     }
-    else {
-        window.location.href = '/calculadora'
-    }
 }
 
 window.checkingRecuperarLoginForms = function () {
@@ -71,6 +68,14 @@ window.recuperarConta = function (data) {
         const passwordValue = match[1].trim();
         alert("Valor da senha: " + passwordValue);
     }
+}
+
+window.login = function (usrData) {
+    if (!usrData || usrData.length === 0) {
+        alert("Dados não batem com nenhum registro. Porfavor, checar seus dados ou se preferir Crie uma conta =)");
+        return;
+    }
+    window.location.href = '/calculadora';
 }
 
 window.chekingCalculoValores = function (altura, peso, sexo) {

@@ -34,8 +34,8 @@
             if (listaJson != null)
             {
                 var listaDeserializada = JsonSerializer.Deserialize<List<string>>(listaJson) ?? [];
-                var senha = listaDeserializada.Find(e => e.Contains("Email:" + Email)) ?? string.Empty;
-                await JSRuntime.InvokeVoidAsync("recuperarConta", senha);
+                var usrData = listaDeserializada.Find(e => e.Contains("Email:" + Email)) ?? string.Empty;
+                await JSRuntime.InvokeVoidAsync("recuperarConta", usrData);
             }
         }
     }

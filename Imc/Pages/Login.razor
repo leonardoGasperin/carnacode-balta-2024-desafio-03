@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject IJSRuntime JSRuntime
+@using System.Text.Json
 <PageTitle>Login</PageTitle>
 
 <img id="loginSplash" class="centralizarElement elementToFadeOut" width="250" height="250" src="/icon.png" />
@@ -10,10 +11,10 @@
     </span>
     <br>
     <div class="inputSmallScreenContainer">
-        <input id="email" class="input inputLogin inputTinyScreen" type="email" placeholder="E-mail" />
+        <input id="email" class="input inputLogin inputTinyScreen" type="email" placeholder="E-mail" @bind="Email"/>
     </div>
     <div class="inputSmallScreenContainer">
-        <input id="senha" class="input inputLogin inputTinyScreen" type="password" placeholder="Senha" />
+        <input id="senha" class="input inputLogin inputTinyScreen" type="password" placeholder="Senha" @bind="Senha" />
     </div>
     <div>
         <input id="notRobot" type="checkbox" />
@@ -26,6 +27,9 @@
 </section>
 
 @code {
+    private string Email { get; set; } = string.Empty;
+    private string Senha { get; set; } = string.Empty;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -37,5 +41,16 @@
     private async Task Checking()
     {
         await JSRuntime.InvokeVoidAsync("checkingLoginForms");
+
+        var cadastroData = await JSRuntime.InvokeAsync<string>("cadastroDados");
+        var listaJson = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "cadastroDados");
+
+        if (listaJson != null)
+        {
+            var listaDeserializada = JsonSerializer.Deserialize<List<string>>(listaJson) ?? [];
+            var usrData = listaDeserializada.Find(e => e.Contains("Email:" + Email + "|" + "Senha:" + Senha)) ?? string.Empty;
+
+            await JSRuntime.InvokeVoidAsync("login", usrData);
+        }
     }
 }
