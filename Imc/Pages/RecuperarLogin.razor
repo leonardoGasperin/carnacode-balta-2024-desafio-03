@@ -1,0 +1,29 @@
+﻿@page "/recuperarLogin"
+@inject IJSRuntime JSRuntime
+<PageTitle>RecuperarLogin</PageTitle>
+
+<section class="principalContainer principalContainerBigScreen principalContainerSmallScreen">
+    <h1 class="h1 h1Small">Relembre seu Login</h1>
+    <span class="descricaoTela">
+        Recupere seu acesso antes de fazer o cálculo IMC
+    </span>
+    <br>
+    <div class="inputSmallScreenContainer">
+        <input id="email" class="input inputLogin inputTinyScreen" type="email" placeholder="E-mail" />
+    </div>
+    <div>
+        <input id="notRobot" type="checkbox" />
+        <span>Não sou um robô.</span>
+    </div>
+    <div class="horizontalDivisor"></div>
+    <button class="btn btnPrimary" @onclick="Checking">Recuperar Login</button>
+    <button class="btn btnSecondary" onclick="window.location.href='/cadastro'">Não tenho um acesso</button>
+    <button class="btn btnSecondary" onclick="window.location.href='/'">Voltar</button>
+</section>
+
+@code {
+    private async Task Checking()
+    {
+        await JSRuntime.InvokeVoidAsync("checkingRecuperarLoginForms");
+    }
+}

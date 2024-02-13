@@ -1,0 +1,68 @@
+﻿@namespace ImcResultadoModal
+@inject IJSRuntime JSRuntime
+@using System.Text.Json
+
+<section id="imcResultadoModal" class="elementToFadeOut principalContainer principalContainerBigScreen principalContainerSmallScreen">
+    @switch (MessagemSelecionada)
+    {
+        case TipoMensagem.AbaixoDoPeso:
+            <h1 id="imcTitulo" class="h1 h1Small">⛔ abaixo do ideal</h1>
+            <span id="imcSpan">Você está abaixo do peso ideal, tem que comer mais feijão!</span>
+            break;
+        case TipoMensagem.PesoNormal:
+            <h1 id="imcTitulo" class="h1 h1Small">✅ Peso Ideal!</h1>
+            <span id="imcSpan">Você está no peso ideal, continue mantendo este estilo!</span>
+            break;
+        case TipoMensagem.Sobrepeso:
+            <h1 id="imcTitulo" class="h1 h1Small">⛔ Sobrepeso!</h1>
+            <span id="imcSpan">Cuidado você está com sobrepeso,  dê uma atenção para sua saúde</span>
+            break;
+        case TipoMensagem.Obesidade:
+            <h1 id="imcTitulo" class="h1 h1Small">⛔ Obesidade!</h1>
+            <span id="imcSpan">Muito cuidado, você esta muito acima do se peso ideal, está na hora de cortar o feijão por uma folha de alfaçe!</span>
+            break;
+        default:
+            <h1 id="imcTitulo" class="h1 h1Small">⚠️ Algo deu errado!</h1>
+            <span id="imcSpan">Os dados fornecido resultaram em um calculo invalido ou em uma faixa de IMC fora da curva. por favor tente novamente.</span>
+            break;
+    }
+    <div class="horizontalDivisor"></div>
+    @if (MessagemSelecionada != TipoMensagem.Invalido)
+    {
+        <button id="salvarImc" class="btn btnPrimary" @onclick="RegisterMeasures">Registrar medidas</button>
+        <button class="btn btnSecondary" onclick="window.location.href='/historico'">Ver meu histórico</button>
+    }
+    <button class="btn btnSecondary" onclick="window.location.href='/calculadora'">Voltar</button>
+</section>
+
+@code {
+    [Parameter] public TipoMensagem MessagemSelecionada { get; set; }
+    List<string> minhaLista = new List<string>();
+
+    private async Task RegisterMeasures()
+    {
+        var listaSalva = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "listaHistorico");
+
+        if (!string.IsNullOrEmpty(listaSalva))
+        {
+            minhaLista = JsonSerializer.Deserialize<List<string>>(listaSalva) ?? [];
+        }
+
+        var imcSave = await JSRuntime.InvokeAsync<string>("criaHistoricoComponente");
+
+        minhaLista.Add(imcSave);
+
+        string jsonLista = JsonSerializer.Serialize(minhaLista);
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "listaHistorico", jsonLista);
+        await JSRuntime.InvokeVoidAsync("finalizaRegistro");
+    }
+
+    public enum TipoMensagem
+    {
+        AbaixoDoPeso,
+        PesoNormal,
+        Sobrepeso,
+        Obesidade,
+        Invalido
+    }
+}

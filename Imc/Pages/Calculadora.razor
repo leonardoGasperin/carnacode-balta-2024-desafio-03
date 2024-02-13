@@ -1,0 +1,58 @@
+﻿@page "/calculadora"
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavManager
+@using ImcResultadoModal
+
+<PageTitle>Calculadora</PageTitle>
+
+<section id="calculadora" class="elementToFadeOut principalContainer principalContainerBigScreen principalContainerSmallScreen">
+    <h1 class="h1 h1Small">Cálculo de IMC</h1>
+    <br>
+    <div class="inputSmallScreenContainer">
+        <label>Altura[m]: </label>
+        <input required id="altura" class="input inputTinyScreen" type="number" @bind="Altura" />
+    </div>
+    <div class="inputSmallScreenContainer">
+        <label>Peso[Kg]: </label>
+        <input required id="peso" class="input inputTinyScreen" type="number" @bind="Peso" />
+    </div>
+    <select required class="input" @bind="Sexo">
+        <option selected value="">Selecione seu sexo.</option>
+        <option value="masculino">Masculino</option>
+        <option value="feminino">Feminino</option>
+    </select>
+    <div>
+        <input type="checkbox" @bind="IsIdoso" />
+        <span>Eu tenho 65 anos ou mais</span>
+    </div>
+    <div class="horizontalDivisor"></div>
+    <button class="btn btnPrimary" @onclick="CalculadoraImc">Calcular meu IMC</button>
+    <button class="btn btnSecondary" onclick="window.location.href='significado'">Entenda o cálculo</button>
+</section>
+
+@if (_showModal)
+{
+    <ResultadoImcModal MessagemSelecionada="@_messageType"/>
+}
+
+@code {
+    private string Sexo { get; set; } = "";
+    private float Altura { get; set; }
+    private float Peso { get; set; }
+    private bool IsIdoso { get; set; }
+    private bool _showModal = false;
+    private ResultadoImcModal.TipoMensagem _messageType;
+
+    private async Task CalculadoraImc()
+    {
+        bool canCalcular = await JSRuntime.InvokeAsync<bool>("chekingCalculoValores", Altura, Peso);
+        if (canCalcular)
+        {
+            float imcValor = await JSRuntime.InvokeAsync<float>("calcularImc", Altura, Peso);
+            string result = await JSRuntime.InvokeAsync<string>("imcResultado", imcValor, IsIdoso, Sexo);
+            _messageType = Enum.Parse<ResultadoImcModal.TipoMensagem>(result);
+            await JSRuntime.InvokeVoidAsync("fadeOutAndShowMainContent", "calculadora", "imcResultadoModal");
+            _showModal = true;
+        }
+    }
+}

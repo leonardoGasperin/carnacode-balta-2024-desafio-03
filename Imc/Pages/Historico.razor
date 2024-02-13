@@ -1,0 +1,34 @@
+﻿@page "/historico"
+@inject IJSRuntime JSRuntime
+@using System.Text.Json
+<PageTitle>Historico</PageTitle>
+
+<section class="principalContainer principalContainerBigScreen principalContainerSmallScreen">
+    <div class="historyHeader">
+        <img src="icon-no-bg.png" width="75" height="75" />
+        <h1 class="h1 h1Small">Histórico</h1>
+    </div>
+    <input required class="input inputTinyScreen barraPesquisa barraPesquisaSmall" type="text" placeholder="Pesquisar..." />
+    <div class="horizontalDivisor"></div>
+    <div id="historicoLista"></div>
+    <button class="btn btnSecondary" onclick="window.location.href='/calculadora'">Voltar</button>
+</section>
+
+@code {
+    List<string> minhaLista = new List<string>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var listaSalva = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "listaHistorico");
+
+            if (!string.IsNullOrEmpty(listaSalva))
+            {
+                minhaLista = JsonSerializer.Deserialize<List<string>>(listaSalva) ?? [];
+
+                await JSRuntime.InvokeVoidAsync("setTimeout", new object[] { $"window.renderHistoricoLista({JsonSerializer.Serialize(minhaLista)})", 100 });
+            }
+        }
+    }
+}

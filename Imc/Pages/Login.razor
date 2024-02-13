@@ -1,0 +1,41 @@
+﻿@page "/"
+@inject IJSRuntime JSRuntime
+<PageTitle>Login</PageTitle>
+
+<img id="loginSplash" class="centralizarElement elementToFadeOut" width="250" height="250" src="/icon.png" />
+<section id="conteudoPrincipal" class="elementToFadeIn principalContainer principalContainerBigScreen principalContainerSmallScreen">
+    <h1 class="h1 h1Small">Faça seu Login</h1>
+    <span class="descricaoTela">
+        Insira suas informações antes de medir seu IMC
+    </span>
+    <br>
+    <div class="inputSmallScreenContainer">
+        <input id="email" class="input inputLogin inputTinyScreen" type="email" placeholder="E-mail" />
+    </div>
+    <div class="inputSmallScreenContainer">
+        <input id="senha" class="input inputLogin inputTinyScreen" type="password" placeholder="Senha" />
+    </div>
+    <div>
+        <input id="notRobot" type="checkbox" />
+        <span>Não sou um robô.</span>
+    </div>
+    <div class="horizontalDivisor"></div>
+    <button class="btn btnPrimary" @onclick="Checking">Fazer Login</button>
+    <button class="btn btnSecondary" onclick="window.location.href='/cadastro'">Não tenho um acesso</button>
+    <button class="btn btnSecondary" onclick="window.location.href='/recuperarLogin'">Recuperar login</button>
+</section>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("fadeOutAndShowMainContent", "loginSplash", "conteudoPrincipal");
+        }
+    }
+
+    private async Task Checking()
+    {
+        await JSRuntime.InvokeVoidAsync("checkingLoginForms");
+    }
+}
