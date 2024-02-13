@@ -20,7 +20,7 @@ jobs:
         
     - name: Restore dependencies
       run: |
-        cd Imc && ls
+        cd Imc && dotnet restore
 
     - name: Build project
       run: dotnet publish --configuration Release --output ./dist /p:PublishSingleFile=true /p:PublishTrimmed=true
