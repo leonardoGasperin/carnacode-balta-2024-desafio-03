@@ -24,7 +24,7 @@ jobs:
 
     - name: Build project
       run: | 
-          ls && dotnet publish --configuration Release --output ./dist /p:PublishSingleFile=true /p:PublishTrimmed=true
+          cd Imc && dotnet publish --configuration Release --output ./dist /p:PublishSingleFile=true /p:PublishTrimmed=true
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
