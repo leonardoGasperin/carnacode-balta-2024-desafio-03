@@ -23,7 +23,8 @@ jobs:
         cd Imc && dotnet restore
 
     - name: Build project
-      run: dotnet publish --configuration Release --output ./dist /p:PublishSingleFile=true /p:PublishTrimmed=true
+      run: | 
+          ls && dotnet publish --configuration Release --output ./dist /p:PublishSingleFile=true /p:PublishTrimmed=true
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
