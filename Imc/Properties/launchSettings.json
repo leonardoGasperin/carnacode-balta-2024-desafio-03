@@ -1,6 +1,5 @@
 {
-  "$schema": "http://json.schemastore.org/launchsettings.json",,
-  "launchUrl": "https://leonardogasperin.github.io/carnacode-balta-2024-desafio-03/",
+  "$schema": "http://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
@@ -19,7 +18,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "launchUrl": "https://leonardogasperin.github.io/carnacode-balta-2024-desafio-03/"
+      "launchUrl": "/carnacode-balta-2024-desafio-03/"
     },
     "https": {
       "commandName": "Project",
@@ -30,7 +29,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "launchUrl": "https://leonardogasperin.github.io/carnacode-balta-2024-desafio-03/"
+      "launchUrl": "/carnacode-balta-2024-desafio-03/"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -39,7 +38,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "launchUrl": "https://leonardogasperin.github.io/carnacode-balta-2024-desafio-03/"
+      "launchUrl": "/carnacode-balta-2024-desafio-03/"
     }
   }
 }
